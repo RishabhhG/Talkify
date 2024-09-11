@@ -1,0 +1,44 @@
+# Ignore node_modules in both client and server
+client/node_modules/
+server/node_modules/
+
+# Ignore build directories
+client/build/
+client/dist/
+server/build/
+server/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore environment variable files
+client/.env
+server/.env
+client/.env.local
+server/.env.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Ignore coverage reports
+coverage/
+client/coverage/
+server/coverage/
+
+# Ignore lock files
+client/package-lock.json
+server/package-lock.json
+client/yarn.lock
+server/yarn.lock
+
+# Ignore TypeScript build files (if applicable)
+*.tsbuildinfo
