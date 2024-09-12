@@ -3,3 +3,4 @@ export const AUTH_ROUTE = "api/auth";
 
 export const SIGNUP_ROUTE = `${AUTH_ROUTE}/signup`;
 export const VERIFY_OTP = `${AUTH_ROUTE}/otp-verification`;
+export const LOGIN_ROUTE = `${AUTH_ROUTE}/login`;

@@ -1,8 +1,13 @@
+import { useAppStore } from '@/store'
 import React from 'react'
+import EnhancedProfilePage from '@/components/enhanced-profile-page'
 
 function Profile() {
+  const {userInfo} = useAppStore()
   return (
-    <div>Profile</div>
+    <div>
+       <EnhancedProfilePage/>
+    </div>
   )
 }
 

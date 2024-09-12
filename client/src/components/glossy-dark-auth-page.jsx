@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Mail, Lock } from 'lucide-react'
 import { toast } from "sonner"
 import { apiClient } from '@/lib/api-client'
-import { SIGNUP_ROUTE } from '@/utils/constant'
+import { SIGNUP_ROUTE, LOGIN_ROUTE } from '@/utils/constant'
+import { useAppStore } from '@/store';
 
 
 
@@ -19,6 +20,7 @@ function GlossyDarkAuthPage() {
   const[password, setpassword] = useState("");
   const[confirm_password, setconfirm_password] = useState("");
   const navigate = useNavigate();
+  const {setUserInfo} = useAppStore()
 
   const validatesignup = ()=>{
 
@@ -40,17 +42,49 @@ function GlossyDarkAuthPage() {
 
   }
 
-  const handlelogin = async()=>{
+  const validatelogin = ()=>{
 
+    if(!email.length){
+      toast.error('Email is required');
+      return false;
+    }
+
+    if(!password.length){
+      toast.error('password is required');
+      return false;
+    }
+
+    return true;
+
+  }
+
+  const handlelogin = async()=>{
+    if(validatelogin()){
+      const response = await apiClient.post(LOGIN_ROUTE, {email, password},{withCredentials : true});
+      console.log(response);
+
+      if(response.data.success){
+        setUserInfo(response.data.user)
+        toast.success('Login successful!.')
+        if(response.data.user.profilesetup){
+          navigate('/chat')
+        }
+        else{
+          navigate('/profile')
+        }
+      }
+
+    }
   }
 
   const handlesignup = async()=>{
     if(validatesignup()){
-      const response = await apiClient.post(SIGNUP_ROUTE, {email, password});
+      const response = await apiClient.post(SIGNUP_ROUTE, {email, password},{withCredentials : true});
       console.log(response);
 
       if(response.data.success){
         toast.success('Signup successful! Check your email for the OTP.')
+        setUserInfo(response.data.user)
         navigate('/otp-verification');
       }
     }

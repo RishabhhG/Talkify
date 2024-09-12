@@ -100,3 +100,61 @@ exports.verifyotp = async(req,res)=>{
         });
     }
 }
+
+exports.login = async(req,res)=>{
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide both email and password"
+            })
+        }
+
+
+        const user = await User.findOne({email})
+        if(!user){
+            return res.status(400).json({
+                success : false,
+                message : "user with the given credentails are not present please signup"
+            })
+        }
+
+        const auth = bcrypt.compare(password, user.password);
+
+        if(!auth){
+            return res.status(400).json({
+                success : false,
+                message : "Incorrect password"
+            })
+        }
+
+        res.cookie("JWT", create_token(email, user.id), {
+            maxage,
+            secure: true,
+            sameSite: "None",
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Login successfull",
+            user: {
+                id : user.id,
+                email : user.email,
+                profilesetup : user.profilesetup,
+                firstname : user.firstname,
+                lastname : user.lastname,
+                image : user.image,
+                color : user.color
+            },
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "cannot signin please check Email and Password"
+        });
+    }
+}

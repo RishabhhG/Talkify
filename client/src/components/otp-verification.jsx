@@ -7,11 +7,13 @@ import { toast } from "sonner"
 import { apiClient } from '@/lib/api-client'
 import { VERIFY_OTP } from '@/utils/constant'
 import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '@/store'
 
 export function OtpVerification() {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const inputRefs = useRef([])
   const navigate = useNavigate();
+  const {setUserInfo} = useAppStore()
 
   const handleChange = (element, index) => {
     if (isNaN(Number(element.target.value))) return false
@@ -57,6 +59,7 @@ export function OtpVerification() {
     const response = await apiClient.post(VERIFY_OTP, { otp: otp.join('')});
     if(response.data.success){
       toast.success('Signup successful!')
+      setUserInfo(response.data.user)
       navigate('/profile');
     }
   }
