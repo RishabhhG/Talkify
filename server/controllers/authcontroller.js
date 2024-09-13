@@ -158,3 +158,93 @@ exports.login = async(req,res)=>{
         });
     }
 }
+
+exports.getuserinfo = async(req,res)=>{
+    try {
+        const userData = await User.findById(req.userID)
+
+        if(!userData){
+            res.status(404).json({
+                success : false,
+                message : "user with given id not found"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Login successfull",
+                id : userData.id,
+                email : userData.email,
+                profilesetup : userData.profilesetup,
+                firstname : userData.firstname,
+                lastname : userData.lastname,
+                image : userData.image,
+                color : userData.color
+        })
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "cannot signin please check Email and Password"
+        });
+    }
+}
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const { firstname, lastname, color } = req.body;
+
+        console.log("Incoming request data:", { firstname, lastname, color });
+        console.log("User ID from request:", req.userID);
+
+        if (!firstname || !lastname) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
+        }
+
+        // Log before updating
+        console.log("Attempting to update user:", req.userID);
+
+        const userData = await User.findByIdAndUpdate(
+            req.userID,
+            { firstname, lastname, color, profilesetup: true },
+            { new: true, runValidators: true }
+        ); 
+
+        // Log the result of the update
+        console.log("Update result:", userData);
+
+        if (!userData) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            id: userData.id,
+            email: userData.email,
+            profilesetup: userData.profilesetup,
+            firstname: userData.firstname,
+            lastname: userData.lastname,
+            image: userData.image,
+            color: userData.color
+        });
+
+    } catch (error) {
+        console.error("Error in updateProfile:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
+
+
+
